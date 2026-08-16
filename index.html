@@ -548,12 +548,12 @@
     <div class="container">
         <!-- Main Message -->
         <div id="mainSection">
-            <div class="big-heart" id="secretHeart">&#10084;</div>
+            <div class="big-heart">&#10084;</div>
             <h1 class="main-message glow-text">Will You Go On A Date With Me?</h1>
-            <p class="sub-message">I promise it will be worth it &#128522;</p>
+            <p class="sub-message">I promise it will be worth it <span id="secretSmiley">&#128522;</span></p>
             <div class="buttons-container">
                 <button class="btn btn-yes" id="btnYes" onclick="handleYes()">Yes, I'd love to!</button>
-                <button class="btn btn-no" id="btnNo" onmouseover="moveNoButton()" onclick="moveNoButton()">No</button>
+                <button class="btn btn-no" id="btnNo" onmouseover="moveNoButton()" onclick="moveNoButton()" ontouchstart="moveNoButton()">No</button>
             </div>
         </div>
 
@@ -648,19 +648,9 @@
             }
         });
 
-        // Mobile: Tap the big heart 5 times quickly to open admin login
-        let tapCount = 0;
-        let tapTimer = null;
-        document.getElementById('secretHeart').addEventListener('click', function() {
-            tapCount++;
-            clearTimeout(tapTimer);
-
-            if (tapCount >= 5) {
-                tapCount = 0;
-                openAdminModal();
-            }
-
-            tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+        // Click on smiley face to open admin login
+        document.getElementById('secretSmiley').addEventListener('click', function() {
+            openAdminModal();
         });
 
         function openAdminModal() {
