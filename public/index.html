@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Go On A Date With Me?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a0000, #330011, #4d001a);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                display: block;
+                overflow-x: hidden;
+                overflow-y: auto;
+                min-height: 100vh;
+            }
+        }
+
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .hearts-bg {
+                position: absolute;
+                height: 200%;
+            }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: floatUp linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 20px 15px;
+                padding-bottom: 60px;
+            }
+        }
+
+        .main-message {
+            font-size: 2.8rem;
+            color: #ff4d6d;
+            text-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+            margin-bottom: 15px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .main-message {
+                font-size: 1.8rem;
+            }
+        }
+
+        .sub-message {
+            font-size: 1.3rem;
+            color: #ffb3c1;
+            margin-bottom: 40px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .buttons-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .btn {
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .btn {
+                width: 80%;
+                padding: 18px 30px;
+                font-size: 1.3rem;
+            }
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff4d6d, #ff758f);
+            color: white;
+            box-shadow: 0 5px 25px rgba(255, 77, 109, 0.4);
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(255, 77, 109, 0.6);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
+            color: white;
+            box-shadow: 0 5px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-no:hover {
+            background: linear-gradient(135deg, #5a6268, #969eaa);
+        }
+
+        .follow-up {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @media (max-width: 768px) {
+            .follow-up {
+                padding: 10px 0;
+            }
+        }
+
+        .follow-up h2 {
+            color: #ff758f;
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ffb3c1;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 350px;
+            max-width: 90vw;
+            padding: 12px 20px;
+            border: 2px solid #ff4d6d;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 14px 15px;
+                font-size: 1rem;
+            }
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #ff758f;
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .form-group select option {
+            background: #1a0000;
+            color: white;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #ff4d6d, #ff758f);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(255, 77, 109, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .btn-submit {
+                width: 90%;
+                padding: 18px 30px;
+                font-size: 1.3rem;
+            }
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(255, 77, 109, 0.6);
+        }
+
+        .thank-you {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .thank-you h2 {
+            font-size: 2.5rem;
+            color: #ff4d6d;
+            margin-bottom: 15px;
+        }
+
+        .thank-you p {
+            font-size: 1.3rem;
+            color: #ffb3c1;
+        }
+
+        .details-box {
+            margin-top: 25px;
+            padding: 20px 30px;
+            border: 2px solid #ff4d6d;
+            border-radius: 15px;
+            background: rgba(255, 77, 109, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+
+        .details-box p {
+            margin: 8px 0;
+            color: #ffb3c1;
+            font-size: 1.1rem;
+        }
+
+        .details-box span {
+            color: #ff758f;
+            font-weight: bold;
+        }
+
+        .big-heart {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+            60% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glow-text {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 77, 109, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 77, 109, 0.8), 0 0 80px rgba(255, 77, 109, 0.4); }
+        }
+
+        .log-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: linear-gradient(135deg, #ff4d6d, #ff758f);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 5px 25px rgba(255, 77, 109, 0.5);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .log-toggle.visible {
+            display: block;
+        }
+
+        .log-toggle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(255, 77, 109, 0.7);
+        }
+
+        .log-toggle .badge {
+            background: #fff;
+            color: #ff4d6d;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-modal.visible {
+            display: flex;
+        }
+
+        .admin-modal-box {
+            background: linear-gradient(135deg, #1a0000, #330011);
+            border: 2px solid #ff4d6d;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .admin-modal-box h3 {
+            color: #ff758f;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .admin-modal-box input {
+            width: 250px;
+            padding: 12px 20px;
+            border: 2px solid #ff4d6d;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .admin-modal-box input:focus {
+            box-shadow: 0 0 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .admin-modal-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .admin-modal-btns button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .admin-btn-login {
+            background: linear-gradient(135deg, #ff4d6d, #ff758f);
+            color: white;
+        }
+
+        .admin-btn-cancel {
+            background: transparent;
+            border: 1px solid #666 !important;
+            color: #999;
+        }
+
+        .admin-btn-login:hover { transform: translateY(-2px); }
+        .admin-btn-cancel:hover { color: white; border-color: #999 !important; }
+
+        .admin-error {
+            color: #ff4d6d;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .log-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-height: 0;
+            background: rgba(10, 0, 5, 0.95);
+            border-top: 2px solid #ff4d6d;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            z-index: 9998;
+        }
+
+        .log-panel.open {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+            background: rgba(255, 77, 109, 0.15);
+            border-bottom: 1px solid rgba(255, 77, 109, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .log-header h3 {
+            color: #ff758f;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .log-header button {
+            background: none;
+            border: 1px solid #ff4d6d;
+            color: #ff758f;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .log-header button:hover {
+            background: #ff4d6d;
+            color: white;
+        }
+
+        .log-content {
+            padding: 15px 25px;
+        }
+
+        .admin-section-title {
+            color: #ff758f;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 77, 109, 0.3);
+        }
+
+        .submission-card {
+            background: rgba(255, 77, 109, 0.1);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 77, 109, 0.3);
+        }
+
+        .submission-number {
+            background: #ff4d6d;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .submission-time {
+            color: #ffb3c1;
+            font-size: 0.85rem;
+        }
+
+        .submission-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-icon {
+            font-size: 1.1rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        .detail-label {
+            color: #ff758f;
+            font-weight: bold;
+            min-width: 90px;
+        }
+
+        .detail-value {
+            color: #ffb3c1;
+        }
+
+        @media (max-width: 768px) {
+            .detail-row {
+                flex-wrap: wrap;
+            }
+            .detail-label {
+                min-width: 100%;
+            }
+            .detail-value {
+                padding-left: 33px;
+            }
+        }
+
+        .log-entry {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            animation: fadeIn 0.3s ease;
+            border-left: 3px solid;
+        }
+
+        .log-entry.action-yes {
+            background: rgba(255, 77, 109, 0.1);
+            border-color: #ff4d6d;
+            color: #ffb3c1;
+        }
+
+        .log-entry.action-no {
+            background: rgba(108, 117, 125, 0.1);
+            border-color: #6c757d;
+            color: #adb5bd;
+        }
+
+        .log-entry.action-submit {
+            background: rgba(255, 120, 150, 0.1);
+            border-color: #ff758f;
+            color: #ff758f;
+        }
+
+        .log-entry.action-view,
+        .log-entry.action-admin {
+            background: rgba(255, 200, 220, 0.1);
+            border-color: #ffb3c1;
+            color: #ffb3c1;
+        }
+
+        .log-entry .log-time {
+            color: #ff4d6d;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.85rem;
+        }
+
+        .log-entry .log-icon {
+            margin-right: 5px;
+        }
+
+        .log-empty {
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .log-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-panel::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .log-panel::-webkit-scrollbar-thumb {
+            background: #ff4d6d;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <div class="container">
+        <div id="mainSection">
+            <div class="big-heart">&#10084;</div>
+            <h1 class="main-message glow-text">Will You Go On A Date With Me?</h1>
+            <p class="sub-message">I promise it will be worth it <span id="secretSmiley">&#128522;</span></p>
+            <div class="buttons-container">
+                <button class="btn btn-yes" id="btnYes" onclick="handleYes()">Yes, I'd love to!</button>
+                <button class="btn btn-no" id="btnNo" onmouseover="moveNoButton()" onclick="moveNoButton()" ontouchstart="moveNoButton()">No</button>
+            </div>
+        </div>
+
+        <div class="follow-up" id="followUp">
+            <div class="big-heart">&#128150;</div>
+            <h2 class="glow-text">Yay! I'm so happy!</h2>
+            <p class="sub-message">Tell me more about our date...</p>
+            <div class="form-group">
+                <label for="dateInput">When would you like to go?</label>
+                <input type="datetime-local" id="dateInput">
+            </div>
+            <div class="form-group">
+                <label for="foodSelect">What would you like to have?</label>
+                <select id="foodSelect">
+                    <option value="">-- Select your choice --</option>
+                    <option value="Italian">&#127837; Italian</option>
+                    <option value="Japanese">&#127843; Japanese / Sushi</option>
+                    <option value="Indian">&#127835; Indian</option>
+                    <option value="Mexican">&#127790; Mexican</option>
+                    <option value="Chinese">&#127838; Chinese</option>
+                    <option value="Desserts">&#127856; Desserts & Cakes</option>
+                    <option value="Coffee">&#9749; Coffee & Bakery</option>
+                    <option value="BBQ">&#127830; BBQ & Grill</option>
+                    <option value="Vegan">&#129382; Vegan / Healthy</option>
+                    <option value="Surprise">&#128150; Surprise Me!</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="placeInput">Any special place you want to visit?</label>
+                <input type="text" id="placeInput" placeholder="e.g. Rooftop restaurant, Park, Beach...">
+            </div>
+            <div class="form-group">
+                <label for="notesInput">Any special notes for me?</label>
+                <textarea id="notesInput" rows="3" placeholder="Anything you want me to know..."></textarea>
+            </div>
+            <button class="btn-submit" onclick="handleSubmit()">Send My Date Plan &#128150;</button>
+        </div>
+
+        <div class="thank-you" id="thankYou">
+            <div class="big-heart">&#128156;</div>
+            <h2 class="glow-text">It's a Date!</h2>
+            <p>I can't wait to meet you!</p>
+            <div class="details-box" id="detailsBox"></div>
+            <p style="margin-top: 25px; color: #ff758f; font-size: 1.2rem;">See you soon! &#128522;&#128150;</p>
+        </div>
+    </div>
+
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-box">
+            <h3>&#128274; Admin Access</h3>
+            <p class="admin-error" id="adminError">Wrong password! Try again.</p>
+            <input type="password" id="adminPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')loginAdmin()">
+            <div class="admin-modal-btns">
+                <button class="admin-btn-login" onclick="loginAdmin()">Login</button>
+                <button class="admin-btn-cancel" onclick="closeAdminModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="log-toggle" id="logToggle" onclick="toggleLog()">
+        &#128202; Activity Log <span class="badge" id="logCount">0</span>
+    </button>
+
+    <div class="log-panel" id="logPanel">
+        <div class="log-header">
+            <h3>&#128202; Admin Dashboard</h3>
+            <div>
+                <button onclick="refreshDashboard()">&#128260; Refresh</button>
+                <button onclick="copyLog()">&#128203; Copy</button>
+                <button onclick="clearLog()">&#128465; Clear</button>
+            </div>
+        </div>
+        <div class="log-content" id="logContent">
+            <p class="log-empty">Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'love123';
+        let isAdminLoggedIn = false;
+        let logOpen = false;
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                openAdminModal();
+            }
+        });
+
+        document.getElementById('secretSmiley').addEventListener('click', function() {
+            openAdminModal();
+        });
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.add('visible');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminError').style.display = 'none';
+            document.getElementById('adminPassword').focus();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('visible');
+        }
+
+        async function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('logToggle').classList.add('visible');
+                closeAdminModal();
+                await addLog('admin', 'Admin logged in');
+                showAdminDashboard();
+            } else {
+                document.getElementById('adminError').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+
+        async function addLog(type, message) {
+            await fetch('/api/logs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, message })
+            });
+        }
+
+        async function getLogs() {
+            const res = await fetch('/api/logs');
+            return await res.json();
+        }
+
+        async function getSubmissions() {
+            const res = await fetch('/api/submissions');
+            return await res.json();
+        }
+
+        async function showAdminDashboard() {
+            const logContent = document.getElementById('logContent');
+            logContent.innerHTML = '<p class="log-empty">Loading data...</p>';
+
+            const submissions = await getSubmissions();
+            const logs = await getLogs();
+
+            document.getElementById('logCount').textContent = submissions.length + logs.length;
+
+            if (submissions.length === 0 && logs.length === 0) {
+                logContent.innerHTML = '<p class="log-empty">No activity yet... waiting for someone to respond!</p>';
+                return;
+            }
+
+            let html = '';
+
+            if (submissions.length > 0) {
+                html += '<div class="admin-section-title">&#128150; Date Submissions (' + submissions.length + ')</div>';
+                submissions.slice().reverse().forEach((sub, index) => {
+                    const created = new Date(sub.createdAt);
+                    const timeStr = created.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    html += `
+                        <div class="submission-card">
+                            <div class="submission-header">
+                                <span class="submission-number">#${submissions.length - index}</span>
+                                <span class="submission-time">${timeStr}</span>
+                            </div>
+                            <div class="submission-details">
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#128197;</span>
+                                    <span class="detail-label">Date & Time:</span>
+                                    <span class="detail-value">${sub.dateInput}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#127860;</span>
+                                    <span class="detail-label">Food:</span>
+                                    <span class="detail-value">${sub.food}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#128205;</span>
+                                    <span class="detail-label">Place:</span>
+                                    <span class="detail-value">${sub.place}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#128172;</span>
+                                    <span class="detail-label">Notes:</span>
+                                    <span class="detail-value">${sub.notes}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if (logs.length > 0) {
+                html += '<div class="admin-section-title">&#128202; Activity Log</div>';
+                logs.slice().reverse().forEach(log => {
+                    const created = new Date(log.createdAt);
+                    const timeStr = created.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const icons = { 'yes': '&#10004;', 'no': '&#10060;', 'submit': '&#128150;', 'view': '&#128065;', 'admin': '&#128274;' };
+                    html += `
+                        <div class="log-entry action-${log.type}">
+                            <span class="log-time">${timeStr}</span>
+                            <span class="log-icon">${icons[log.type] || '&#128196;'}</span>
+                            ${log.message}
+                        </div>
+                    `;
+                });
+            }
+
+            logContent.innerHTML = html;
+        }
+
+        function toggleLog() {
+            logOpen = !logOpen;
+            document.getElementById('logPanel').classList.toggle('open', logOpen);
+            if (logOpen && isAdminLoggedIn) {
+                showAdminDashboard();
+            }
+        }
+
+        async function refreshDashboard() {
+            if (isAdminLoggedIn) {
+                await showAdminDashboard();
+            }
+        }
+
+        async function copyLog() {
+            const logs = await getLogs();
+            const submissions = await getSubmissions();
+            let text = '=== Love Date Request - Admin Data ===\n\n';
+            text += '--- SUBMISSIONS ---\n';
+            submissions.forEach((sub, i) => {
+                text += `\n#${i + 1}\n`;
+                text += `Date: ${sub.dateInput}\n`;
+                text += `Food: ${sub.food}\n`;
+                text += `Place: ${sub.place}\n`;
+                text += `Notes: ${sub.notes}\n`;
+            });
+            text += '\n--- ACTIVITY LOG ---\n';
+            logs.forEach(log => {
+                const t = new Date(log.createdAt).toLocaleString();
+                text += `[${t}] ${log.type}: ${log.message}\n`;
+            });
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Data copied to clipboard!');
+            });
+        }
+
+        async function clearLog() {
+            if (confirm('Clear all data? This cannot be undone!')) {
+                await fetch('/api/clear', { method: 'DELETE' });
+                await showAdminDashboard();
+            }
+        }
+
+        // Log page view on load
+        (async () => {
+            await addLog('view', 'Someone opened the date request page');
+        })();
+
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('heartsBg');
+            const hearts = ['&#10084;', '&#128150;', '&#128151;', '&#128152;', '&#128153;', '&#128154;', '&#128155;'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.color = `hsl(${Math.random() * 30 + 330}, 100%, ${Math.random() * 30 + 50}%)`;
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 10000);
+            }, 300);
+        }
+        createHearts();
+
+        function moveNoButton() {
+            const btn = document.getElementById('btnNo');
+            const maxX = window.innerWidth - btn.offsetWidth - 20;
+            const maxY = window.innerHeight - btn.offsetHeight - 20;
+            const newX = Math.random() * (maxX - 20) + 10;
+            const newY = Math.random() * (maxY - 20) + 10;
+            btn.style.position = 'fixed';
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
+            btn.style.zIndex = '1000';
+            const messages = [
+                "No way! Try again!", "Think again!", "You can't escape!",
+                "Nice try!", "Not so fast!", "I won't give up!",
+                "Try clicking Yes instead!", "Come on, say Yes!"
+            ];
+            btn.textContent = messages[Math.floor(Math.random() * messages.length)];
+            addLog('no', 'User tried to click <strong>"No"</strong> - Button escaped!');
+        }
+
+        function handleYes() {
+            addLog('yes', 'User clicked <strong>"Yes, I\'d love to!"</strong>');
+            document.getElementById('mainSection').style.display = 'none';
+            document.getElementById('followUp').style.display = 'block';
+        }
+
+        async function handleSubmit() {
+            const dateVal = document.getElementById('dateInput').value;
+            const foodVal = document.getElementById('foodSelect').value;
+            const placeVal = document.getElementById('placeInput').value || 'Somewhere romantic';
+            const notesVal = document.getElementById('notesInput').value || 'None';
+
+            if (!dateVal || !foodVal) {
+                alert('Please fill in at least the date and food preferences!');
+                return;
+            }
+
+            const dateObj = new Date(dateVal);
+            const formattedDate = dateObj.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            const formattedTime = dateObj.toLocaleTimeString('en-US', {
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            // Save to server
+            await fetch('/api/submissions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    dateInput: formattedDate + ' at ' + formattedTime,
+                    food: foodVal,
+                    place: placeVal,
+                    notes: notesVal
+                })
+            });
+
+            await addLog('submit', `Date submitted! <strong>Food:</strong> ${foodVal} | <strong>Place:</strong> ${placeVal}`);
+
+            const detailsHTML = `
+                <p>&#128197; <span>Date:</span> ${formattedDate}</p>
+                <p>&#128336; <span>Time:</span> ${formattedTime}</p>
+                <p>&#127860; <span>Food:</span> ${foodVal}</p>
+                <p>&#128205; <span>Place:</span> ${placeVal}</p>
+                <p>&#128172; <span>Notes:</span> ${notesVal}</p>
+            `;
+
+            document.getElementById('detailsBox').innerHTML = detailsHTML;
+            document.getElementById('followUp').style.display = 'none';
+            document.getElementById('thankYou').style.display = 'block';
+            celebrate();
+        }
+
+        function celebrate() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '&#128150;';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    heart.style.color = `hsl(${Math.random() * 30 + 330}, 100%, ${Math.random() * 30 + 60}%)`;
+                    document.getElementById('heartsBg').appendChild(heart);
+                    setTimeout(() => heart.remove(), 6000);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>

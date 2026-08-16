@@ -1,0 +1,12 @@
+{
+  "name": "love-date-request",
+  "version": "1.0.0",
+  "description": "Love date request page with admin dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
