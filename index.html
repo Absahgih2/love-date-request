@@ -499,6 +499,87 @@
             padding: 15px 25px;
         }
 
+        /* Admin Dashboard Styles */
+        .admin-section-title {
+            color: #ff758f;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 77, 109, 0.3);
+        }
+
+        .submission-card {
+            background: rgba(255, 77, 109, 0.1);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 77, 109, 0.3);
+        }
+
+        .submission-number {
+            background: #ff4d6d;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .submission-time {
+            color: #ffb3c1;
+            font-size: 0.85rem;
+        }
+
+        .submission-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-icon {
+            font-size: 1.1rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        .detail-label {
+            color: #ff758f;
+            font-weight: bold;
+            min-width: 90px;
+        }
+
+        .detail-value {
+            color: #ffb3c1;
+        }
+
+        @media (max-width: 768px) {
+            .detail-row {
+                flex-wrap: wrap;
+            }
+            .detail-label {
+                min-width: 100%;
+            }
+            .detail-value {
+                padding-left: 33px;
+            }
+        }
+
         .log-entry {
             padding: 10px 15px;
             margin-bottom: 8px;
@@ -688,11 +769,78 @@
                 document.getElementById('logToggle').classList.add('visible');
                 closeAdminModal();
                 addLog('admin', 'Admin logged in and viewing activity log');
+                showAdminDashboard();
             } else {
                 document.getElementById('adminError').style.display = 'block';
                 document.getElementById('adminPassword').value = '';
                 document.getElementById('adminPassword').focus();
             }
+        }
+
+        function showAdminDashboard() {
+            const submissions = JSON.parse(localStorage.getItem('dateSubmissions') || '[]');
+            const logContent = document.getElementById('logContent');
+
+            if (submissions.length === 0 && logEntries.length === 0) {
+                logContent.innerHTML = '<p class="log-empty">No activity yet... waiting for someone to respond!</p>';
+                return;
+            }
+
+            let html = '';
+
+            // Show submissions if any
+            if (submissions.length > 0) {
+                html += '<div class="admin-section-title">&#128150; Date Submissions (' + submissions.length + ')</div>';
+                submissions.slice().reverse().forEach((sub, index) => {
+                    html += `
+                        <div class="submission-card">
+                            <div class="submission-header">
+                                <span class="submission-number">#${submissions.length - index}</span>
+                                <span class="submission-time">${sub.date} ${sub.time}</span>
+                            </div>
+                            <div class="submission-details">
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#128197;</span>
+                                    <span class="detail-label">Date & Time:</span>
+                                    <span class="detail-value">${sub.dateInput}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#127860;</span>
+                                    <span class="detail-label">Food:</span>
+                                    <span class="detail-value">${sub.food}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#128205;</span>
+                                    <span class="detail-label">Place:</span>
+                                    <span class="detail-value">${sub.place}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-icon">&#128172;</span>
+                                    <span class="detail-label">Notes:</span>
+                                    <span class="detail-value">${sub.notes}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Show activity log
+            if (logEntries.length > 0) {
+                html += '<div class="admin-section-title">&#128202; Activity Log</div>';
+                logEntries.slice().reverse().forEach(entry => {
+                    const icons = { 'yes': '&#10004;', 'no': '&#10060;', 'submit': '&#128150;', 'view': '&#128065;', 'admin': '&#128274;' };
+                    html += `
+                        <div class="log-entry action-${entry.type}">
+                            <span class="log-time">${entry.date} ${entry.time}</span>
+                            <span class="log-icon">${icons[entry.type] || '&#128196;'}</span>
+                            ${entry.message}
+                        </div>
+                    `;
+                });
+            }
+
+            logContent.innerHTML = html;
         }
 
         // Log system with localStorage persistence
@@ -742,6 +890,9 @@
         function toggleLog() {
             logOpen = !logOpen;
             document.getElementById('logPanel').classList.toggle('open', logOpen);
+            if (logOpen && isAdminLoggedIn) {
+                showAdminDashboard();
+            }
         }
 
         function copyLog() {
@@ -759,9 +910,10 @@
         }
 
         function clearLog() {
-            if (confirm('Clear all log entries?')) {
+            if (confirm('Clear all log entries and submissions?')) {
                 logEntries = [];
                 localStorage.setItem('dateLogEntries', JSON.stringify(logEntries));
+                localStorage.removeItem('dateSubmissions');
                 renderLog();
                 updateBadge();
             }
@@ -855,6 +1007,22 @@
                 minute: '2-digit'
             });
 
+            // Store submission data
+            const now = new Date();
+            const submission = {
+                dateInput: formattedDate + ' at ' + formattedTime,
+                food: foodVal,
+                place: placeVal,
+                notes: notesVal,
+                date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                timestamp: now.getTime()
+            };
+
+            let submissions = JSON.parse(localStorage.getItem('dateSubmissions') || '[]');
+            submissions.push(submission);
+            localStorage.setItem('dateSubmissions', JSON.stringify(submissions));
+
             const detailsHTML = `
                 <p>&#128197; <span>Date:</span> ${formattedDate}</p>
                 <p>&#128336; <span>Time:</span> ${formattedTime}</p>
@@ -864,7 +1032,7 @@
             `;
 
             document.getElementById('detailsBox').innerHTML = detailsHTML;
-            addLog('submit', `Date plan submitted! <strong>Date:</strong> ${formattedDate} | <strong>Time:</strong> ${formattedTime} | <strong>Food:</strong> ${foodVal} | <strong>Place:</strong> ${placeVal} | <strong>Notes:</strong> ${notesVal}`);
+            addLog('submit', `Date plan submitted! <strong>Food:</strong> ${foodVal} | <strong>Place:</strong> ${placeVal}`);
             document.getElementById('followUp').style.display = 'none';
             document.getElementById('thankYou').style.display = 'block';
 
